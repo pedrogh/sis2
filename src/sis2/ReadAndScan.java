@@ -9,6 +9,7 @@ package sis2;
  *
  * @author pedro
  */
+import com.sun.xml.internal.ws.util.StringUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -31,18 +32,19 @@ public class ReadAndScan {
     private ArrayList<String> _courseFileColumnNamesOrder = new ArrayList<>();
     private ArrayList<String> _studentFileColumnNamesOrder = new ArrayList<>();
     // The number of columns we expect in each of the file types.
-    private final int COURSE_FILE_COLUMN_COUNT  = 3;
+    private final int COURSE_FILE_COLUMN_COUNT = 3;
     private final int STUDENT_FILE_COLUMN_COUNT = 4;
+    private boolean _processingError = false;
 
     /**
      * Constructor.
-     * 
+     *
      * @param coursesFileName
      * @param studentsFileName
      * @param enrollment
      * @throws IOException
      * @throws InvalidFileTypeException
-     * @throws FailedToParseFileLineException 
+     * @throws FailedToParseFileLineException
      */
     public ReadAndScan(String coursesFileName, String studentsFileName, IEnrollment enrollment)
             throws IOException, InvalidFileTypeException, FailedToParseFileLineException {
@@ -53,6 +55,13 @@ public class ReadAndScan {
             System.out.println("Current dir:" + current);
             this.processLineByLine(coursesFileName);
             this.processLineByLine(studentsFileName);
+            
+            if (_processingError) {
+                System.out.println("-----------------------------------------------------------------------");
+                System.out.println("   There were errors while processing the data files.");
+                System.out.println("   Some student, class or enrollment information might be incorrect.");
+                System.out.println("-----------------------------------------------------------------------");
+            }
         } catch (IOException ex) {
             System.out.println("Could not read file");
         }
@@ -178,24 +187,31 @@ public class ReadAndScan {
      * @throws sis2.FailedToParseFileLineException
      */
     protected void processCourseLine(String aLine) throws FailedToParseFileLineException {
+
         String[] parts = aLine.trim().split(",");
+        try {
+            if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
+                Integer courseID = Integer.parseInt(parts[_courseFileColumnNamesOrder.indexOf("course_id")].trim());
+                String courseName = parts[_courseFileColumnNamesOrder.indexOf("course_name")].trim().replace("\"", "");
+                String courseState = parts[_courseFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");
 
-        if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
-            Integer courseID = Integer.parseInt(parts[_courseFileColumnNamesOrder.indexOf("course_id")].trim());
-            String courseName = parts[_courseFileColumnNamesOrder.indexOf("course_name")].trim().replace("\"", "");
-            String courseState = parts[_courseFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");
+                LogCourseLine(courseID, courseName, courseState);
+                Course course = new Course(courseID, courseName, courseState);
+                _enrollment.addCourse(course);
 
-            LogCourseLine(courseID, courseName, courseState);
-            Course course = new Course(courseID, courseName, courseState);
-            _enrollment.addCourse(course);
-
-        } else {
-            log("Empty or invalid line. Unable to process.");
+            } else {
+                // Try to prevent major error.
+                log(" * Line is missing columns in course file. " + Arrays.toString(parts));
+            }
+        } catch (java.lang.ArrayIndexOutOfBoundsException | java.lang.NumberFormatException ex) {
+            // Handle major error.
+            _processingError = true;
+            log("** Unable to process line in course file. " + Arrays.toString(parts));
         }
     }
 
     /**
-     * Get student info from the line.   Since the columns were already checked,
+     * Get student info from the line. Since the columns were already checked,
      * and they all exist, here we use the order in which they came in and it
      * was stored in courseFileColumnNamesOrder.
      *
@@ -208,27 +224,34 @@ public class ReadAndScan {
     protected void processStudentLine(String aLine) throws FailedToParseFileLineException {
         String[] parts = aLine.trim().split(",");
 
-        if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
-            Integer courseID = Integer.parseInt(parts[_studentFileColumnNamesOrder.indexOf("course_id")].trim());
-            Integer userID = Integer.parseInt(parts[_studentFileColumnNamesOrder.indexOf("user_id")].trim());
-            String userName = parts[_studentFileColumnNamesOrder.indexOf("user_name")].trim().replace("\"", "");
-            String studentState = parts[_studentFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");
-            
-            LogStudentLine(userID, userName, courseID, studentState);
-            Student student = new Student(userID, userName, courseID, studentState);
-            _enrollment.addStudentToCourse(student);
+        try {
+            if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
+                Integer courseID = Integer.parseInt(parts[_studentFileColumnNamesOrder.indexOf("course_id")].trim());
+                Integer userID = Integer.parseInt(parts[_studentFileColumnNamesOrder.indexOf("user_id")].trim());
+                String userName = parts[_studentFileColumnNamesOrder.indexOf("user_name")].trim().replace("\"", "");
+                String studentState = parts[_studentFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");
 
-        } else {
-            log("Empty or invalid line. Unable to process.");
+                LogStudentLine(userID, userName, courseID, studentState);
+                Student student = new Student(userID, userName, courseID, studentState);
+                _enrollment.addStudentToCourse(student);
+
+            } else {
+                log(" * Line is missing columns in student file. " + Arrays.toString(parts));
+            }
+        } catch (java.lang.ArrayIndexOutOfBoundsException | java.lang.NumberFormatException ex) {
+            // Handle major error.
+            _processingError = true;
+            log("** Unable to process line in student file. " + Arrays.toString(parts));            
         }
     }
 
     /**
      * Helper method to examine what is going on as we process files.
+     *
      * @param userId
      * @param userName
      * @param courseId
-     * @param state 
+     * @param state
      */
     private void LogStudentLine(int userId, String userName, int courseId,
             String state) {
@@ -239,9 +262,10 @@ public class ReadAndScan {
 
     /**
      * Helper method to examine what is going on as we process files.
+     *
      * @param courseId
      * @param courseName
-     * @param state 
+     * @param state
      */
     private void LogCourseLine(int courseId, String courseName, String state) {
         log("course ID: " + quote(Integer.toString(courseId)) + ", Name : " + quote(courseName)
