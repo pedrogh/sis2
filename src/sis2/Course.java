@@ -26,11 +26,21 @@ public class Course {
      * @param courseName
      * @param State
      */
-    public Course(Integer courseId, String courseName, String State) {
+    public Course(Integer courseId, String courseName, String state) {
         this._students = new ArrayList<>();
+        
         _courseId = courseId;
-        _courseName = courseName;
-        _state = State;
+        if (!courseName.isEmpty()) {
+            _courseName = courseName;
+        } else {
+            _courseName = "No name";
+        }
+
+        if (!state.isEmpty()) {
+            _state = state;
+        } else {
+            _state = "No state";
+        }
     }
 
     /**

@@ -18,9 +18,19 @@ public class Student {
 
     public Student(Integer userId, String userName, Integer courseId, String state) {
         _userId = userId;
-        _userName = userName;
+        if (!userName.isEmpty()) {
+            _userName = userName;
+        } else {
+            _userName = "No name";
+        }
+        
         _courseId = courseId;
-        _state = state;
+        
+        if (!state.isEmpty()) {
+            _state = state;
+        } else {
+            _state = "No state";
+        }
     }
 
     public Integer getUserId() {
