@@ -107,6 +107,8 @@ public class Course {
     public void printStudents() {
         System.out.println("\tStudents in class:");
         if (this.getState().equalsIgnoreCase("active")) {
+            // Print the course name first.
+            System.out.println(this.getCourseName().toString());
             for (int i = 0; i < _students.size(); i++) {
                 Student student = (Student) _students.get(i);
                 if (student.getState().equalsIgnoreCase("active")) {
