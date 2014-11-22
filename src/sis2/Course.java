@@ -43,24 +43,28 @@ public class Course {
         // The student wasn't there so add it
         if (studentInCourse == null) {
             _students.add(student);
-        }
-        else {
+        } else {
             // The student was there.  I assume we can only update the
             // state.  Maybe the course should be checked.
             studentInCourse.setState(student.getState());
-        }        
+        }
     }
-    
-    protected Student getStudentWithId(Integer StudentId) {
+
+    /**
+     * Get the student with the given id.
+     *
+     * @param studentId
+     * @return
+     */
+    protected Student getStudentWithId(Integer studentId) {
         Student studentWithId = null;
-        for(int i = 0; i < _students.size(); i++) {
-            Student student = (Student)_students.get(i);
-            if (student.getUserId() == StudentId) {
+        for (int i = 0; i < _students.size(); i++) {
+            Student student = (Student) _students.get(i);
+            if (student.getUserId() == studentId) {
                 studentWithId = student;
-                //System.out.println("\t\tStudent: " + student);
             }
         }
-        
+
         return studentWithId;
     }
 
@@ -96,20 +100,20 @@ public class Course {
         this._state = _state;
     }
 
+    /**
+     * Print all the students enrolled in the given course if the course is
+     * active.
+     */
     public void printStudents() {
-        //Iterator it = _students.iterator();
-
-        // To iterate through the elements of the collection we can use hasNext() and next() methods of Iterator
-        
         System.out.println("\tStudents in class:");
-        //while (it.hasNext()) {
-        for(int i = 0; i < _students.size(); i++) {
-            Student student = (Student)_students.get(i);
-            if (student.getState().equalsIgnoreCase("active")) {
-                System.out.println("\t\tStudent: " + student);
+        if (this.getState().equalsIgnoreCase("active")) {
+            for (int i = 0; i < _students.size(); i++) {
+                Student student = (Student) _students.get(i);
+                if (student.getState().equalsIgnoreCase("active")) {
+                    System.out.println("\t\tStudent: " + student);
+                }
             }
         }
-
     }
 
     @Override
