@@ -23,14 +23,29 @@ public class ReadAndScan {
     // Type of the file.
     private InputFileType _fileType = InputFileType.UNKNOWN;
     private IEnrollment _enrollment = null;
+    // The column names we expect to see in the student file.
     private final ArrayList<String> _validStudentFileColumnNames = new ArrayList<>(Arrays.asList("user_id", "user_name", "course_id", "state"));
+    // The column names we expect to see in the course file.
     private final ArrayList<String> _validCourseFileColumnNames = new ArrayList<>(Arrays.asList("course_id", "course_name", "state"));
+    // Will hold the order in which the columns are coming in.
     private ArrayList<String> _courseFileColumnNamesOrder = new ArrayList<>();
     private ArrayList<String> _studentFileColumnNamesOrder = new ArrayList<>();
+    // The number of columns we expect in each of the file types.
     private final int COURSE_FILE_COLUMN_COUNT  = 3;
     private final int STUDENT_FILE_COLUMN_COUNT = 4;
 
-    public ReadAndScan(String coursesFileName, String studentsFileName, IEnrollment enrollment) throws IOException, InvalidFileTypeException, FailedToParseFileLineException {
+    /**
+     * Constructor.
+     * 
+     * @param coursesFileName
+     * @param studentsFileName
+     * @param enrollment
+     * @throws IOException
+     * @throws InvalidFileTypeException
+     * @throws FailedToParseFileLineException 
+     */
+    public ReadAndScan(String coursesFileName, String studentsFileName, IEnrollment enrollment)
+            throws IOException, InvalidFileTypeException, FailedToParseFileLineException {
 
         try {
             _enrollment = enrollment;
