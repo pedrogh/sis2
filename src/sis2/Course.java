@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public class Course {
 
-    private ArrayList<Student> _students = new ArrayList<>();
+    private ArrayList<Student> _students;
     private Integer _courseId = -1;
     private String _courseName = "";
     private String _state = "";
@@ -27,6 +27,7 @@ public class Course {
      * @param State
      */
     public Course(Integer courseId, String courseName, String State) {
+        this._students = new ArrayList<>();
         _courseId = courseId;
         _courseName = courseName;
         _state = State;
@@ -37,6 +38,7 @@ public class Course {
      * Returns 
      *
      * @param student
+     * @return 
      */
     public boolean addStudent(Student student) {
         boolean bStudentWasAdded = false;
@@ -120,11 +122,11 @@ public class Course {
      */
     public void printStudents() {
         if (this.getState().equalsIgnoreCase("active")) {
-            System.out.println("Students in class:");
             // Print the course name first.
-            System.out.println(this.toString());
-            for (int i = 0; i < _students.size(); i++) {
-                Student student = (Student) _students.get(i);
+            System.out.print(this.toString());
+            System.out.println("\tStudents in class:");
+            for (Student _student : _students) {
+                Student student = (Student) _student;
                 student.print();
             }
         }
@@ -134,10 +136,11 @@ public class Course {
     public String toString() {
         StringBuilder result = new StringBuilder();
         String NEW_LINE = System.getProperty("line.separator");
-
-        result.append(" Couse ID: " + getCourseId() + NEW_LINE);
-        result.append(" Course Name: \"" + getCourseName() + "\"" + NEW_LINE);
-        result.append(" Course State: " + getState() + NEW_LINE);
+        
+        System.out.println();
+        result.append(" Course ID: ").append(getCourseId()).append(NEW_LINE);
+        result.append(" Course Name: \"").append(getCourseName()).append("\"").append(NEW_LINE);
+        result.append(" Course State: ").append(getState()).append(NEW_LINE);
 
         return result.toString();
     }

@@ -61,8 +61,10 @@ public class ReadAndScan {
     /**
      * Process each line in the file.
      *
+     * @param fileName
      * @throws IOException
      * @throws InvalidFileTypeException
+     * @throws sis2.FailedToParseFileLineException
      */
     public final void processLineByLine(String fileName) throws IOException, InvalidFileTypeException, FailedToParseFileLineException {
         fFilePath = Paths.get(fileName);
@@ -173,6 +175,7 @@ public class ReadAndScan {
      * courseFileColumnNamesOrder.
      *
      * @param aLine
+     * @throws sis2.FailedToParseFileLineException
      */
     protected void processCourseLine(String aLine) throws FailedToParseFileLineException {
         String[] parts = aLine.trim().split(",");
@@ -180,7 +183,7 @@ public class ReadAndScan {
         if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
             Integer courseID = Integer.parseInt(parts[_courseFileColumnNamesOrder.indexOf("course_id")].trim());
             String courseName = parts[_courseFileColumnNamesOrder.indexOf("course_name")].trim().replace("\"", "");
-            String courseState = parts[_courseFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");;
+            String courseState = parts[_courseFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");
 
             LogCourseLine(courseID, courseName, courseState);
             Course course = new Course(courseID, courseName, courseState);
@@ -200,6 +203,7 @@ public class ReadAndScan {
      * studentFileColumnNamesOrder.
      *
      * @param aLine
+     * @throws sis2.FailedToParseFileLineException
      */
     protected void processStudentLine(String aLine) throws FailedToParseFileLineException {
         String[] parts = aLine.trim().split(",");
@@ -207,11 +211,11 @@ public class ReadAndScan {
         if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
             Integer courseID = Integer.parseInt(parts[_studentFileColumnNamesOrder.indexOf("course_id")].trim());
             Integer userID = Integer.parseInt(parts[_studentFileColumnNamesOrder.indexOf("user_id")].trim());
-            String userName = parts[_studentFileColumnNamesOrder.indexOf("user_name")].trim().replace("\"", "");;
-            String studentState = parts[_studentFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");;
+            String userName = parts[_studentFileColumnNamesOrder.indexOf("user_name")].trim().replace("\"", "");
+            String studentState = parts[_studentFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");
             
             LogStudentLine(userID, userName, courseID, studentState);
-            Student student = new Student(new Integer(userID), userName, new Integer(courseID), studentState);
+            Student student = new Student(userID, userName, courseID, studentState);
             _enrollment.addStudentToCourse(student);
 
         } else {

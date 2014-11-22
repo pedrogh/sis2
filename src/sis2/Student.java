@@ -57,7 +57,7 @@ public class Student {
 
     public void print() {
         if (getState().equalsIgnoreCase("active")) {
-            System.out.println("\t" + this.toString());
+            System.out.print("\t" + this.toString());
         }
     }
 
@@ -67,7 +67,7 @@ public class Student {
         StringBuilder result = new StringBuilder();
 
         String NEW_LINE = System.getProperty("line.separator");
-        result.append(" Student Name: " + getUserName() + NEW_LINE);
+        result.append(" Student Name: ").append(getUserName()).append(NEW_LINE);
 
         return result.toString();
     }

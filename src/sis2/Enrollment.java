@@ -14,7 +14,7 @@ import java.util.TreeMap;
  */
 public class Enrollment implements IEnrollment {
 
-    private SortedMap<Integer, Course> _courses = new TreeMap<Integer, Course>();
+    private final SortedMap<Integer, Course> _courses = new TreeMap<>();
 
     /**
      * Constructor
@@ -26,7 +26,7 @@ public class Enrollment implements IEnrollment {
     /**
      * Add a course.
      *
-     * @param course
+     * @param aCourse
      */
     @Override
     public void addCourse(Course aCourse) {
@@ -107,7 +107,7 @@ public class Enrollment implements IEnrollment {
      */
     @Override
     public void printEnrollment() {
-        System.out.println("Enrollment");
+        System.out.println("Enrollment:");
         for (SortedMap.Entry<Integer, Course> entry : _courses.entrySet()) {
             Course course = entry.getValue();
             // Print the students in this course whose state is not deleted.
