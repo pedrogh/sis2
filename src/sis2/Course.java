@@ -6,6 +6,7 @@
 package sis2;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Vector;
 
 /**
@@ -34,33 +35,48 @@ public class Course {
 
     /**
      * Add a student to this course.
+     * Returns 
      *
      * @param student
      */
-    public void addStudent(Student student) {
+    public boolean addStudent(Student student) {
+        boolean bStudentWasAdded = false;
         // Find the student
-        Student studentInCourse = getStudentWithId(student.getUserId());
+        Student studentInCourse = getStudent(student.getUserId());
         // The student wasn't there so add it
         if (studentInCourse == null) {
             _students.add(student);
+            bStudentWasAdded = true;
         } else {
             // The student was there.  I assume we can only update the
             // state.  Maybe the course should be checked.
             studentInCourse.setState(student.getState());
+            
         }
+        
+        return bStudentWasAdded;
     }
 
+    /**
+     * Overloaded method so we can also pass a Student.
+     * @param student
+     * @return 
+     */
+    public Student getStudent(Student student) {
+        return getStudent(student.getUserId());
+    }
+    
     /**
      * Get the student with the given id.
      *
      * @param studentId
      * @return
      */
-    protected Student getStudentWithId(Integer studentId) {
+    public Student getStudent(Integer studentId) {
         Student studentWithId = null;
-        for (int i = 0; i < _students.size(); i++) {
-            Student student = (Student) _students.get(i);
-            if (student.getUserId() == studentId) {
+        for (Object _student : _students) {
+            Student student = (Student) _student;
+            if (Objects.equals(student.getUserId(), studentId)) {
                 studentWithId = student;
             }
         }
