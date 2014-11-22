@@ -43,7 +43,21 @@ public class Enrollment implements IEnrollment {
 
     /**
      * Add a student to a course.
-     *
+     * As per the requirement 'a Student can only be enrolled in one course'
+     * so:
+     * We look up the student in the courses
+     * If we don't find the student we enroll in the course.
+     * If we find the student we:
+     *   Check if the student is enrolled in the current course, if so,
+     *   we check the state of the new data.  We don't check because it will either
+     *   be 'active' or 'deleted'.  Checking to change the state would make more
+     *   sense if we had more than two states.
+     * 
+     *   If the student
+     * 
+     * change the state for the current course to
+     *  'deleted'
+     * 
      * @param student
      */
     @Override
