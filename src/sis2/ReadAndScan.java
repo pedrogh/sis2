@@ -23,10 +23,10 @@ public class ReadAndScan {
     // Type of the file.
     private InputFileType _fileType = InputFileType.UNKNOWN;
     private IEnrollment _enrollment = null;
-    private final ArrayList<String> validStudentFileColumnNames = new ArrayList<>(Arrays.asList("user_id", "user_name", "course_id", "state"));
-    private final ArrayList<String> validCourseFileColumnNames = new ArrayList<>(Arrays.asList("course_id", "course_name", "state"));
-    private ArrayList<String> courseFileColumnNamesOrder = new ArrayList<>();
-    private ArrayList<String> studentFileColumnNamesOrder = new ArrayList<>();
+    private final ArrayList<String> _validStudentFileColumnNames = new ArrayList<>(Arrays.asList("user_id", "user_name", "course_id", "state"));
+    private final ArrayList<String> _validCourseFileColumnNames = new ArrayList<>(Arrays.asList("course_id", "course_name", "state"));
+    private ArrayList<String> _courseFileColumnNamesOrder = new ArrayList<>();
+    private ArrayList<String> _studentFileColumnNamesOrder = new ArrayList<>();
     private final int COURSE_FILE_COLUMN_COUNT  = 3;
     private final int STUDENT_FILE_COLUMN_COUNT = 4;
 
@@ -114,34 +114,34 @@ public class ReadAndScan {
             // We don't care in what order the columns came in.  As long as
             // all the columns exits.
             // Check to see if we might have a course file.
-            if (validCourseFileColumnNames.contains(firstColumn.trim().toLowerCase())
-                    && validCourseFileColumnNames.contains(secondColumn.trim().toLowerCase())
-                    && validCourseFileColumnNames.contains(thirdColumn.trim().toLowerCase())) {
+            if (_validCourseFileColumnNames.contains(firstColumn.trim().toLowerCase())
+                    && _validCourseFileColumnNames.contains(secondColumn.trim().toLowerCase())
+                    && _validCourseFileColumnNames.contains(thirdColumn.trim().toLowerCase())) {
 
                 fileType = InputFileType.COURSE;
 
                 // Store the order in which the columns existed in the file.
-                courseFileColumnNamesOrder.add(firstColumn.trim().toLowerCase());
-                courseFileColumnNamesOrder.add(secondColumn.trim().toLowerCase());
-                courseFileColumnNamesOrder.add(thirdColumn.trim().toLowerCase());
+                _courseFileColumnNamesOrder.add(firstColumn.trim().toLowerCase());
+                _courseFileColumnNamesOrder.add(secondColumn.trim().toLowerCase());
+                _courseFileColumnNamesOrder.add(thirdColumn.trim().toLowerCase());
 
             } // Check to see if it might be of student file type.
-            else if (validStudentFileColumnNames.contains(firstColumn.trim().toLowerCase())
-                    && validStudentFileColumnNames.contains(secondColumn.trim().toLowerCase())
-                    && validStudentFileColumnNames.contains(thirdColumn.trim().toLowerCase())) {
+            else if (_validStudentFileColumnNames.contains(firstColumn.trim().toLowerCase())
+                    && _validStudentFileColumnNames.contains(secondColumn.trim().toLowerCase())
+                    && _validStudentFileColumnNames.contains(thirdColumn.trim().toLowerCase())) {
 
                 // If so then there should be a fourth column.  
                 // Check to make sure.
                 fourthColumn = scanner.next().trim();
-                if (validStudentFileColumnNames.contains(fourthColumn.trim().toLowerCase())) {
+                if (_validStudentFileColumnNames.contains(fourthColumn.trim().toLowerCase())) {
 
                     fileType = InputFileType.STUDENT;
 
                     // Store the order in which the columns existed in the file.
-                    studentFileColumnNamesOrder.add(firstColumn.trim().toLowerCase());
-                    studentFileColumnNamesOrder.add(secondColumn.trim().toLowerCase());
-                    studentFileColumnNamesOrder.add(thirdColumn.trim().toLowerCase());
-                    studentFileColumnNamesOrder.add(fourthColumn.trim().toLowerCase());
+                    _studentFileColumnNamesOrder.add(firstColumn.trim().toLowerCase());
+                    _studentFileColumnNamesOrder.add(secondColumn.trim().toLowerCase());
+                    _studentFileColumnNamesOrder.add(thirdColumn.trim().toLowerCase());
+                    _studentFileColumnNamesOrder.add(fourthColumn.trim().toLowerCase());
                 }
             }
         }
@@ -163,9 +163,9 @@ public class ReadAndScan {
         String[] parts = aLine.trim().split(",");
 
         if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
-            Integer courseID = Integer.parseInt(parts[courseFileColumnNamesOrder.indexOf("course_id")].trim());
-            String courseName = parts[courseFileColumnNamesOrder.indexOf("course_name")].trim().replace("\"", "");
-            String courseState = parts[courseFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");;
+            Integer courseID = Integer.parseInt(parts[_courseFileColumnNamesOrder.indexOf("course_id")].trim());
+            String courseName = parts[_courseFileColumnNamesOrder.indexOf("course_name")].trim().replace("\"", "");
+            String courseState = parts[_courseFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");;
 
             LogCourseLine(courseID, courseName, courseState);
             Course course = new Course(courseID, courseName, courseState);
@@ -190,10 +190,10 @@ public class ReadAndScan {
         String[] parts = aLine.trim().split(",");
 
         if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
-            Integer courseID = Integer.parseInt(parts[studentFileColumnNamesOrder.indexOf("course_id")].trim());
-            Integer userID = Integer.parseInt(parts[studentFileColumnNamesOrder.indexOf("user_id")].trim());
-            String userName = parts[studentFileColumnNamesOrder.indexOf("user_name")].trim().replace("\"", "");;
-            String studentState = parts[studentFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");;
+            Integer courseID = Integer.parseInt(parts[_studentFileColumnNamesOrder.indexOf("course_id")].trim());
+            Integer userID = Integer.parseInt(parts[_studentFileColumnNamesOrder.indexOf("user_id")].trim());
+            String userName = parts[_studentFileColumnNamesOrder.indexOf("user_name")].trim().replace("\"", "");;
+            String studentState = parts[_studentFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");;
             
             LogStudentLine(userID, userName, courseID, studentState);
             Student student = new Student(new Integer(userID), userName, new Integer(courseID), studentState);
