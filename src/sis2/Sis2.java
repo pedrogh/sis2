@@ -26,11 +26,7 @@ public class Sis2 {
                 String studentsFileName = args[1];
                 ReadAndScan readAndScan = new ReadAndScan(coursesFileName, studentsFileName, enrollment);
                 enrollment.printEnrollment();
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            } catch (InvalidFileTypeException ex) {
-                System.out.println(ex.getMessage());
-            } catch (FailedToParseFileLineException ex) {
+            } catch (IOException | InvalidFileTypeException | FailedToParseFileLineException ex) {
                 System.out.println(ex.getMessage());
             }
         }
