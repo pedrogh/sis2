@@ -49,7 +49,12 @@ public class Enrollment implements IEnrollment {
      * We look up the student in the courses
      * If we don't find the student we enroll in the course regardless of the
      * state.  Students with 'delete' state won't print anyway.  Aware that this 
-     * will make the program to use more memory.
+     * will make the program to use more memory.  Plus the requirement reads
+     * 'The user_id and course_id are globally unique. As a result, if the id 
+     * does not exist, create a new record, otherwise, update the existing
+     * record'.  That also implies there is no need to remove a student from
+     * a course when the course changes but we can change the state in the
+     * current course.
      * 
      * If we find the student we:
      *   Check if the student is enrolled in the current course, if so,
@@ -69,12 +74,12 @@ public class Enrollment implements IEnrollment {
         //_courses.put(courseId, course);
         Course course = _courses.get(student.getCourseId()); 
         
-        if ( course == null || course.getState().equalsIgnoreCase("deleted") ) {
-            System.out.println("Student " + student.getUserName() + 
-                    " cannot be enrolled in course with id " + 
+        if (course == null) {
+            System.out.println("Student " + student.getUserName() + " with id "
+                    + student.getUserId() + " is using an invalid course id: " + 
                     student.getCourseId());
         } else {
-            // The course exists and it is not deleted.
+            // The course exists.
             course.addStudent(student);
         }
     }
@@ -87,14 +92,10 @@ public class Enrollment implements IEnrollment {
     public void printEnrollment() {
         System.out.println("Enrollment");
         for (SortedMap.Entry<Integer, Course> entry : _courses.entrySet()) {
-            Integer key = entry.getKey();
-            Course  value = entry.getValue();
-            if (value.getState().equalsIgnoreCase("active")) {
-                System.out.println(entry.getValue().toString());
-                
-                // Print the students in this course whose state is not deleted.
-                value.printStudents();
-            }
+            Course  course = entry.getValue();
+            // Print the students in this course whose state is not deleted.
+            // Logic of whether the course prints and whether it prints 
+            course.printStudents();            
         }
     }
     

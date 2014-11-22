@@ -105,14 +105,14 @@ public class Course {
      * students enrolled in that course.
      */
     public void printStudents() {
-        System.out.println("\tStudents in class:");
         if (this.getState().equalsIgnoreCase("active")) {
+            System.out.println("Students in class:");
             // Print the course name first.
-            System.out.println(this.getCourseName().toString());
+            System.out.println(this.toString());
             for (int i = 0; i < _students.size(); i++) {
                 Student student = (Student) _students.get(i);
                 if (student.getState().equalsIgnoreCase("active")) {
-                    System.out.println("\t\tStudent: " + student);
+                    System.out.println("\t"+student);
                 }
             }
         }
@@ -124,7 +124,7 @@ public class Course {
         String NEW_LINE = System.getProperty("line.separator");
 
         result.append(" Couse ID: " + getCourseId() + NEW_LINE);
-        result.append(" Course Name: " + getCourseName() + NEW_LINE);
+        result.append(" Course Name: \"" + getCourseName() + "\"" + NEW_LINE);
         result.append(" Course State: " + getState() + NEW_LINE);
 
         return result.toString();

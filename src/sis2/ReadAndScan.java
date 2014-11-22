@@ -80,7 +80,7 @@ public class ReadAndScan {
      */
     protected void processCoursesFile(Scanner scanner) throws FailedToParseFileLineException {
         while (scanner.hasNextLine()) {
-            processStudentLine(scanner.nextLine());
+            processCourseLine(scanner.nextLine());
         }
     }
 
