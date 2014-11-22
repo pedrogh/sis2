@@ -101,8 +101,8 @@ public class Course {
     }
 
     /**
-     * Print all the students enrolled in the given course if the course is
-     * active.
+     * Output if the course is active, and for each course, a list of active
+     * students enrolled in that course.
      */
     public void printStudents() {
         System.out.println("\tStudents in class:");
