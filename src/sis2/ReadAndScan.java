@@ -23,14 +23,13 @@ public class ReadAndScan {
     private IEnrollment _enrollment = null;
 
     public ReadAndScan(String coursesFileName, String studentsFileName, IEnrollment enrollment) throws IOException, InvalidFileTypeException, FailedToParseFileLineException {
-        
+
         try {
             _enrollment = enrollment;
             String current = new java.io.File(".").getCanonicalPath();
             System.out.println("Current dir:" + current);
             this.processLineByLine(coursesFileName);
             this.processLineByLine(studentsFileName);
-            //_enrollment.printEnrollment();
         } catch (InvalidFileTypeException ex) {
             System.out.println("Invalid file type: " + ex.getMessage());
         } catch (IOException ex) {
@@ -53,14 +52,35 @@ public class ReadAndScan {
             if (_fileType == InputFileType.UNKNOWN) {
                 throw new InvalidFileTypeException("File is not of type student or course.");
             } else {
-                while (scanner.hasNextLine()) {
-                    if (_fileType == InputFileType.STUDENT) {
-                        processStudentLine(scanner.nextLine());
-                    } else if (_fileType == InputFileType.COURSE) {
-                        processCourseLine(scanner.nextLine());
-                    }
+                // Now we check input file type only once.
+                if (_fileType == InputFileType.STUDENT) {
+                    processStudentsFile(scanner);
+                } else if (_fileType == InputFileType.COURSE) {
+                    processCoursesFile(scanner);
                 }
             }
+        }
+    }
+
+    /**
+     * Parse the rest of the students csv file.
+     * @param scanner
+     * @throws FailedToParseFileLineException 
+     */
+    protected void processStudentsFile(Scanner scanner) throws FailedToParseFileLineException {
+        while (scanner.hasNextLine()) {
+            processStudentLine(scanner.nextLine());
+        }
+    }
+    
+    /**
+     * Parse the rest of the courses csv file.
+     * @param scanner
+     * @throws FailedToParseFileLineException 
+     */
+    protected void processCoursesFile(Scanner scanner) throws FailedToParseFileLineException {
+        while (scanner.hasNextLine()) {
+            processStudentLine(scanner.nextLine());
         }
     }
 
@@ -203,7 +223,7 @@ public class ReadAndScan {
             }
 
             LogStudentLine(userID, userName, courseID, state);
-            
+
             Student student = new Student(new Integer(userID), userName, new Integer(courseID), state);
             _enrollment.addStudentToCourse(student);
 
