@@ -18,10 +18,10 @@ import static org.junit.Assert.*;
  * @author pedro
  */
 public class ReadAndScanTest {
-    IEnrollment enrollment = null;
-    ReadAndScan readAndScan = null;
-    String coursesFileName = "courses.csv";
-    String studentsFileName = "students.csv";
+    IEnrollment _enrollment = null;
+    ReadAndScan _readAndScan = null;
+    String _coursesFileName = "courses.csv";
+    String _studentsFileName = "students.csv";
     
     public ReadAndScanTest() {
     }
@@ -37,8 +37,8 @@ public class ReadAndScanTest {
     @Before
     public void setUp() {
         try {            
-            enrollment = new Enrollment();
-            readAndScan = new ReadAndScan(coursesFileName, studentsFileName, enrollment);
+            _enrollment = new Enrollment();
+            _readAndScan = new ReadAndScan(_coursesFileName, _studentsFileName, _enrollment);
         } catch (IOException | InvalidFileTypeException | FailedToParseFileLineException ex) {
             System.out.println(ex.getMessage());
         }     
@@ -51,42 +51,42 @@ public class ReadAndScanTest {
     @Test
     public void testGetNumberOfCourses() {
         // There should be three courses
-        assertEquals(3, enrollment.getNumberOfCourses());
+        assertEquals(3, _enrollment.getNumberOfCourses());
     }
     
     public void testGetNumberOfStudentsForCourseId() {
-        coursesFileName = "courses_bad_column_order.csv";
-        studentsFileName = "students.csv";
+        _coursesFileName = "courses_bad_column_order.csv";
+        _studentsFileName = "students.csv";
         Integer courseIdWithTwoStudents = new Integer(2);
         int expectedStudents = 2;
-        assertEquals(expectedStudents, enrollment.getNumberOfStudents(courseIdWithTwoStudents));
+        assertEquals(expectedStudents, _enrollment.getNumberOfStudents(courseIdWithTwoStudents));
         
         Integer courseIdWithOneStudent = new Integer(4);
         expectedStudents = 1;
-        assertEquals(expectedStudents, enrollment.getNumberOfStudents(courseIdWithOneStudent));
+        assertEquals(expectedStudents, _enrollment.getNumberOfStudents(courseIdWithOneStudent));
     }
     
     @Test
     public void testGetNumberOfCoursesUsingFilesWithColumnOutOfOrder() {
-        coursesFileName = "courses_bad_column_order.csv";
-        studentsFileName = "students.csv";
-        assertEquals(3, enrollment.getNumberOfCourses());
+        _coursesFileName = "courses_bad_column_order.csv";
+        _studentsFileName = "students.csv";
+        assertEquals(3, _enrollment.getNumberOfCourses());
     }
     
     @Test
     public void testGetNumberOfStudentsUsingWithColumnOutOfOrder() {
-        coursesFileName = "courses_bad_column_order.csv";
-        studentsFileName = "students.csv";
-        Integer courseIdWithNoStudents = new Integer(6);
-        assertEquals(0, enrollment.getNumberOfStudents(courseIdWithNoStudents));
+        _coursesFileName = "courses_bad_column_order.csv";
+        _studentsFileName = "students.csv";
+        Integer courseIdWithNoStudents = 6;
+        assertEquals(0, _enrollment.getNumberOfStudents(courseIdWithNoStudents));
     }
     
     @Test
     public void testGetCourseNameOfCourseFileWithColumnOutOfOrder() {
-        coursesFileName = "courses_bad_column_order.csv";
-        studentsFileName = "students.csv";
+        _coursesFileName = "courses_bad_column_order.csv";
+        _studentsFileName = "students.csv";
         String courseNameForID = "Operating Systems";
-        Course course = enrollment.getCourse(5);
+        Course course = _enrollment.getCourse(5);
         assertEquals(courseNameForID, course.getCourseName());
     }
 }
