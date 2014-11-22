@@ -93,7 +93,7 @@ public class Enrollment implements IEnrollment {
                         // If the student existed in another course change its
                         // state
                         if (studentInOtherCourse != null) {
-                            studentInOtherCourse.setState("inactive");
+                            studentInOtherCourse.setState("deleted");
                         }
                     }
                 }
