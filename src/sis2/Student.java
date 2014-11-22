@@ -55,14 +55,19 @@ public class Student {
         this._state = state;
     }
 
+    public void print() {
+        if (getState().equalsIgnoreCase("active")) {
+            System.out.println("\t" + this.toString());
+        }
+    }
+
     @Override
     public String toString() {
 
         StringBuilder result = new StringBuilder();
-        if (getState().equalsIgnoreCase("active")) {
-            String NEW_LINE = System.getProperty("line.separator");
-            result.append(" Student Name: " + getUserName() + NEW_LINE);
-        }
+
+        String NEW_LINE = System.getProperty("line.separator");
+        result.append(" Student Name: " + getUserName() + NEW_LINE);
 
         return result.toString();
     }

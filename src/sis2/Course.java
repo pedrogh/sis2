@@ -126,7 +126,7 @@ public class Course {
             System.out.println(this.toString());
             for (int i = 0; i < _students.size(); i++) {
                 Student student = (Student) _students.get(i);
-                System.out.println("\t"+student.toString());
+                student.print();
             }
         }
     }
