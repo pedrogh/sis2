@@ -43,20 +43,24 @@ public class Enrollment implements IEnrollment {
 
     /**
      * Add a student to a course.
-     * As per the requirement 'a Student can only be enrolled in one course'
+     * As per the requirement 'a Student can only be enrolled in one course'.
      * so:
+     * 
      * We look up the student in the courses
-     * If we don't find the student we enroll in the course.
+     * If we don't find the student we enroll in the course regardless of the
+     * state.  Students with 'delete' state won't print anyway.  Aware that this 
+     * will make the program to use more memory.
+     * 
      * If we find the student we:
      *   Check if the student is enrolled in the current course, if so,
-     *   we check the state of the new data.  We don't check because it will either
-     *   be 'active' or 'deleted'.  Checking to change the state would make more
-     *   sense if we had more than two states.
+     *   we change the state of the new data.  We don't check if the state is
+     *   different because it will either be 'active' or 'deleted'.
+     *   Checking to change the state would make sense if we had more than
+     *   two states.  The logic for changing states might become more complex
+     *   the more states there are.
      * 
-     *   If the student
-     * 
-     * change the state for the current course to
-     *  'deleted'
+     *   If the student is enrolled but the course is different then we also
+     *   change course and state.
      * 
      * @param student
      */
@@ -65,14 +69,20 @@ public class Enrollment implements IEnrollment {
         //_courses.put(courseId, course);
         Course course = _courses.get(student.getCourseId()); 
         
-        if ( course == null || course.getState().equalsIgnoreCase("deleted") ){
-            System.out.println("Student " + student.getUserName() + " cannot be enrolled in course with id " + student.getCourseId());
+        if ( course == null || course.getState().equalsIgnoreCase("deleted") ) {
+            System.out.println("Student " + student.getUserName() + 
+                    " cannot be enrolled in course with id " + 
+                    student.getCourseId());
         } else {
             // The course exists and it is not deleted.
             course.addStudent(student);
         }
     }
 
+    /**
+     * Output a list of active courses, and for each course, a list of active
+     * students enrolled in that course.
+     */
     @Override
     public void printEnrollment() {
         System.out.println("Enrollment");
@@ -88,11 +98,21 @@ public class Enrollment implements IEnrollment {
         }
     }
     
+    /**
+     * Get the number of courses.
+     * @return 
+     */
     @Override
     public int getNumberOfCourses() {
         return _courses.size();
     }
     
+    /**
+     * Get the number of students for a given course.  No student should show
+     * in more than one course as per the requirement.
+     * @param courseId
+     * @return 
+     */
     @Override
     public int getNumberOfStudents(Integer courseId)
     {
