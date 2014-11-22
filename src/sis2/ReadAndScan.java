@@ -27,6 +27,8 @@ public class ReadAndScan {
     private final ArrayList<String> validCourseFileColumnNames = new ArrayList<>(Arrays.asList("course_id", "course_name", "state"));
     private ArrayList<String> courseFileColumnNamesOrder = new ArrayList<>();
     private ArrayList<String> studentFileColumnNamesOrder = new ArrayList<>();
+    private final int COURSE_FILE_COLUMN_COUNT  = 3;
+    private final int STUDENT_FILE_COLUMN_COUNT = 4;
 
     public ReadAndScan(String coursesFileName, String studentsFileName, IEnrollment enrollment) throws IOException, InvalidFileTypeException, FailedToParseFileLineException {
 
@@ -109,7 +111,9 @@ public class ReadAndScan {
             // Don't know if we need to read a fourth column yet.
             String fourthColumn = "";
 
-            // We don't care in what order the columns came in.
+            // We don't care in what order the columns came in.  As long as
+            // all the columns exits.
+            // Check to see if we might have a course file.
             if (validCourseFileColumnNames.contains(firstColumn.trim().toLowerCase())
                     && validCourseFileColumnNames.contains(secondColumn.trim().toLowerCase())
                     && validCourseFileColumnNames.contains(thirdColumn.trim().toLowerCase())) {
@@ -121,12 +125,13 @@ public class ReadAndScan {
                 courseFileColumnNamesOrder.add(secondColumn.trim().toLowerCase());
                 courseFileColumnNamesOrder.add(thirdColumn.trim().toLowerCase());
 
-            } else if (validStudentFileColumnNames.contains(firstColumn.trim().toLowerCase())
+            } // Check to see if it might be of student file type.
+            else if (validStudentFileColumnNames.contains(firstColumn.trim().toLowerCase())
                     && validStudentFileColumnNames.contains(secondColumn.trim().toLowerCase())
                     && validStudentFileColumnNames.contains(thirdColumn.trim().toLowerCase())) {
 
-                // Check to see if it might be of student file type.
-                // If so then there should be a fourth column.  Check just to make sure.
+                // If so then there should be a fourth column.  
+                // Check to make sure.
                 fourthColumn = scanner.next().trim();
                 if (validStudentFileColumnNames.contains(fourthColumn.trim().toLowerCase())) {
 
@@ -145,63 +150,25 @@ public class ReadAndScan {
     }
 
     /**
-     * Get course info from the line.
+     * Get course info from the line. Since the columns were already checked,
+     * and they all exist, here we use the order in which they came in and it
+     * was stored in courseFileColumnNamesOrder.
+     *
+     * We obtain the column value we need by using the index stored in
+     * courseFileColumnNamesOrder.
      *
      * @param aLine
      */
     protected void processCourseLine(String aLine) throws FailedToParseFileLineException {
-        //use a second Scanner to parse the content of each line 
-        Scanner scanner = new Scanner(aLine);
-        scanner.useDelimiter(",");
-        if (scanner.hasNext()) {
-            //assumes the line has a certain structure
-            // course_id, course_name, state.
-            Integer courseID = -1;
-            String courseName = "";
-            String state = "";
+        String[] parts = aLine.trim().split(",");
 
-            // Parse the first column
-            if (courseFileColumnNamesOrder.get(0).compareToIgnoreCase("course_name") == 0) {
-                // Parse string for course name.
-                courseName = parseString(scanner);
+        if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
+            Integer courseID = Integer.parseInt(parts[courseFileColumnNamesOrder.indexOf("course_id")].trim());
+            String courseName = parts[courseFileColumnNamesOrder.indexOf("course_name")].trim().replace("\"", "");
+            String courseState = parts[courseFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");;
 
-            } else if (courseFileColumnNamesOrder.get(0).compareToIgnoreCase("course_id") == 0) {
-                // Parse Integer for course id.
-                courseID = parseInteger(scanner);
-
-            } else if (courseFileColumnNamesOrder.get(0).compareToIgnoreCase("state") == 0) {
-                // Parse string for state.
-                state = parseString(scanner);
-            }
-
-            // Parse the second column
-            if (courseFileColumnNamesOrder.get(1).compareToIgnoreCase("course_name") == 0) {
-                // Parse string for course name.
-                courseName = parseString(scanner);
-            } else if (courseFileColumnNamesOrder.get(1).compareToIgnoreCase("course_id") == 0) {
-                // Parse Integer for course id.
-                courseID = parseInteger(scanner);
-
-            } else if (courseFileColumnNamesOrder.get(1).compareToIgnoreCase("state") == 0) {
-                // Parse string for state.
-                state = parseString(scanner);
-            }
-
-            // Parse the third column
-            if (courseFileColumnNamesOrder.get(2).compareToIgnoreCase("course_name") == 0) {
-                // Parse string for course name.
-                courseName = parseString(scanner);
-            } else if (courseFileColumnNamesOrder.get(2).compareToIgnoreCase("course_id") == 0) {
-                // Parse Integer for course id.
-                courseID = parseInteger(scanner);
-
-            } else if (courseFileColumnNamesOrder.get(2).compareToIgnoreCase("state") == 0) {
-                // Parse string for state.
-                state = parseString(scanner);
-            }
-
-            LogCourseLine(courseID, courseName, state);
-            Course course = new Course(courseID, courseName, state);
+            LogCourseLine(courseID, courseName, courseState);
+            Course course = new Course(courseID, courseName, courseState);
             _enrollment.addCourse(course);
 
         } else {
@@ -210,132 +177,40 @@ public class ReadAndScan {
     }
 
     /**
-     * Get student info from the line.
+     * Get student info from the line.   Since the columns were already checked,
+     * and they all exist, here we use the order in which they came in and it
+     * was stored in courseFileColumnNamesOrder.
+     *
+     * We obtain the column value we need by using the index stored in
+     * studentFileColumnNamesOrder.
      *
      * @param aLine
      */
     protected void processStudentLine(String aLine) throws FailedToParseFileLineException {
-        Scanner scanner = new Scanner(aLine);
-        scanner.useDelimiter(",");
-        if (scanner.hasNext()) {
-            //assumes the line has a certain structure
-            // user_id, user_name, course_id, state
-            Integer userID = -1;
-            String userName = "";
-            Integer courseID = -1;
-            String state = "";
-            
-            // Parse the first column
-            if (studentFileColumnNamesOrder.get(0).compareToIgnoreCase("user_name") == 0) {
-                // Parse string for user name.
-                userName = parseString(scanner);
-            } else if (studentFileColumnNamesOrder.get(0).compareToIgnoreCase("user_id") == 0) {
-                // Parse Integer for user id.
-                userID = parseInteger(scanner);
-            } else if (studentFileColumnNamesOrder.get(0).compareToIgnoreCase("state") == 0) {
-                // Parse string for state.
-                state = parseString(scanner);
-            } else if (studentFileColumnNamesOrder.get(0).compareToIgnoreCase("course_id") == 0) {
-                // Parse string for course id.
-                courseID = parseInteger(scanner);
-            }
-            
-            // Parse the second column
-            if (studentFileColumnNamesOrder.get(1).compareToIgnoreCase("user_name") == 0) {
-                // Parse string for user name.
-                userName = parseString(scanner);
-            } else if (studentFileColumnNamesOrder.get(1).compareToIgnoreCase("user_id") == 0) {
-                // Parse Integer for user id.
-                userID = parseInteger(scanner);
-            } else if (studentFileColumnNamesOrder.get(1).compareToIgnoreCase("state") == 0) {
-                // Parse string for state.
-                state = parseString(scanner);
-            } else if (studentFileColumnNamesOrder.get(1).compareToIgnoreCase("course_id") == 0) {
-                // Parse string for course id.
-                courseID = parseInteger(scanner);
-            }
-            
-            // Parse the third column
-            if (studentFileColumnNamesOrder.get(2).compareToIgnoreCase("user_name") == 0) {
-                // Parse string for user name.
-                userName = parseString(scanner);
-            } else if (studentFileColumnNamesOrder.get(2).compareToIgnoreCase("user_id") == 0) {
-                // Parse Integer for user id.
-                userID = parseInteger(scanner);
-            } else if (studentFileColumnNamesOrder.get(2).compareToIgnoreCase("state") == 0) {
-                // Parse string for state.
-                state = parseString(scanner);
-            } else if (studentFileColumnNamesOrder.get(2).compareToIgnoreCase("course_id") == 0) {
-                // Parse string for course id.
-                courseID = parseInteger(scanner);
-            }
-            
-            // Parse the fourth column
-            if (studentFileColumnNamesOrder.get(3).compareToIgnoreCase("user_name") == 0) {
-                // Parse string for user name.
-                userName = parseString(scanner);
-            } else if (studentFileColumnNamesOrder.get(3).compareToIgnoreCase("user_id") == 0) {
-                // Parse Integer for user id.
-                userID = parseInteger(scanner);
-            } else if (studentFileColumnNamesOrder.get(3).compareToIgnoreCase("state") == 0) {
-                // Parse string for state.
-                state = parseString(scanner);
-            } else if (studentFileColumnNamesOrder.get(3).compareToIgnoreCase("course_id") == 0) {
-                // Parse string for course id.
-                courseID = parseInteger(scanner);
-            }
+        String[] parts = aLine.trim().split(",");
 
-            LogStudentLine(userID, userName, courseID, state);
-
-            Student student = new Student(new Integer(userID), userName, new Integer(courseID), state);
+        if (parts.length <= STUDENT_FILE_COLUMN_COUNT) {
+            Integer courseID = Integer.parseInt(parts[studentFileColumnNamesOrder.indexOf("course_id")].trim());
+            Integer userID = Integer.parseInt(parts[studentFileColumnNamesOrder.indexOf("user_id")].trim());
+            String userName = parts[studentFileColumnNamesOrder.indexOf("user_name")].trim().replace("\"", "");;
+            String studentState = parts[studentFileColumnNamesOrder.indexOf("state")].trim().replace("\"", "");;
+            
+            LogStudentLine(userID, userName, courseID, studentState);
+            Student student = new Student(new Integer(userID), userName, new Integer(courseID), studentState);
             _enrollment.addStudentToCourse(student);
 
         } else {
             log("Empty or invalid line. Unable to process.");
         }
     }
-    
-        /**
-     * Helper method to get a Integer from a string.
-     *
-     * @param scanner
-     * @return
-     * @throws FailedToParseFileLineException
-     */
-    private Integer parseInteger(Scanner scanner) throws FailedToParseFileLineException {
-        Integer integerValue = null;
-        try {
-            String strCourseId = scanner.next().trim();
-            integerValue = Integer.parseInt(strCourseId);
-        } catch (java.util.NoSuchElementException ex) {
-            log("Could not parse integer column");
-            throw new FailedToParseFileLineException("Could not find integer column.");
-        } catch (NumberFormatException ex) {
-            log("Invalid integer value");
-            throw new FailedToParseFileLineException("Invalid integer value");
-        }
-
-        return integerValue;
-    }
 
     /**
-     * Helper method to get a string variable.
-     *
-     * @param scanner
-     * @return
-     * @throws FailedToParseFileLineException
+     * Helper method to examine what is going on as we process files.
+     * @param userId
+     * @param userName
+     * @param courseId
+     * @param state 
      */
-    private String parseString(Scanner scanner) throws FailedToParseFileLineException {
-        String stringValue = null;
-        try {
-            stringValue = scanner.next().trim().replace("\"", "");
-        } catch (java.util.NoSuchElementException ex) {
-            log("Could not parse string column");
-            throw new FailedToParseFileLineException("Could not parse string column");
-        }
-        return stringValue;
-    }
-
     private void LogStudentLine(int userId, String userName, int courseId,
             String state) {
         log("Student ID: " + quote(Integer.toString(userId)) + ", Name : " + quote(userName)
@@ -343,6 +218,12 @@ public class ReadAndScan {
                 + ", state : " + quote(state));
     }
 
+    /**
+     * Helper method to examine what is going on as we process files.
+     * @param courseId
+     * @param courseName
+     * @param state 
+     */
     private void LogCourseLine(int courseId, String courseName, String state) {
         log("course ID: " + quote(Integer.toString(courseId)) + ", Name : " + quote(courseName)
                 + ", state : " + quote(state));
