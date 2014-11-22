@@ -126,9 +126,7 @@ public class Course {
             System.out.println(this.toString());
             for (int i = 0; i < _students.size(); i++) {
                 Student student = (Student) _students.get(i);
-                if (student.getState().equalsIgnoreCase("active")) {
-                    System.out.println("\t"+student);
-                }
+                System.out.println("\t"+student.toString());
             }
         }
     }

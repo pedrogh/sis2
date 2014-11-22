@@ -10,18 +10,19 @@ package sis2;
  * @author pedro
  */
 public class Student {
+
     private Integer _userId = -1;
     private String _userName = "";
     private Integer _courseId = -1;
     private String _state = "";
-    
+
     public Student(Integer userId, String userName, Integer courseId, String state) {
         _userId = userId;
         _userName = userName;
         _courseId = courseId;
         _state = state;
     }
-    
+
     public Integer getUserId() {
         return _userId;
     }
@@ -53,13 +54,15 @@ public class Student {
     public void setState(String state) {
         this._state = state;
     }
-    
+
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        String NEW_LINE = System.getProperty("line.separator");
 
-        result.append(" Student Name: " + getUserName() + NEW_LINE);   
+        StringBuilder result = new StringBuilder();
+        if (getState().equalsIgnoreCase("active")) {
+            String NEW_LINE = System.getProperty("line.separator");
+            result.append(" Student Name: " + getUserName() + NEW_LINE);
+        }
 
         return result.toString();
     }
