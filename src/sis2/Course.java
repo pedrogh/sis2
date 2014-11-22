@@ -5,9 +5,8 @@
  */
 package sis2;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Vector;
 
 /**
  *
@@ -15,7 +14,7 @@ import java.util.Vector;
  */
 public class Course {
 
-    private Vector _students = new Vector();
+    private ArrayList<Student> _students = new ArrayList<>();
     private Integer _courseId = -1;
     private String _courseName = "";
     private String _state = "";
@@ -83,11 +82,11 @@ public class Course {
         return studentWithId;
     }
 
-    public Vector getStudents() {
+    public ArrayList<Student> getStudents() {
         return _students;
     }
 
-    public void setStudents(Vector _students) {
+    public void setStudents(ArrayList<Student> _students) {
         this._students = _students;
     }
 
