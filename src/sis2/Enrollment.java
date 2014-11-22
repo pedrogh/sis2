@@ -143,4 +143,16 @@ public class Enrollment implements IEnrollment {
             return 0;
         }
     }
+    
+    /**
+     * Get the course given the course id.
+     * @param courseId
+     * @return 
+     */
+    @Override
+    public Course getCourse(Integer courseId)
+    {
+        Course course = _courses.get(courseId);
+        return course;
+    }
 }

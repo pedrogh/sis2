@@ -54,73 +54,39 @@ public class ReadAndScanTest {
         assertEquals(3, enrollment.getNumberOfCourses());
     }
     
+    public void testGetNumberOfStudentsForCourseId() {
+        coursesFileName = "courses_bad_column_order.csv";
+        studentsFileName = "students.csv";
+        Integer courseIdWithTwoStudents = new Integer(2);
+        int expectedStudents = 2;
+        assertEquals(expectedStudents, enrollment.getNumberOfStudents(courseIdWithTwoStudents));
+        
+        Integer courseIdWithOneStudent = new Integer(4);
+        expectedStudents = 1;
+        assertEquals(expectedStudents, enrollment.getNumberOfStudents(courseIdWithOneStudent));
+    }
+    
     @Test
-    public void testGetNumberOfCoursesUsingIncorrectFiles() {
+    public void testGetNumberOfCoursesUsingFilesWithColumnOutOfOrder() {
         coursesFileName = "courses_bad_column_order.csv";
         studentsFileName = "students.csv";
         assertEquals(3, enrollment.getNumberOfCourses());
     }
     
     @Test
-    public void testGetNumberOfStudentsUsingIncorrectFiles() {
+    public void testGetNumberOfStudentsUsingWithColumnOutOfOrder() {
         coursesFileName = "courses_bad_column_order.csv";
         studentsFileName = "students.csv";
         Integer courseIdWithNoStudents = new Integer(6);
         assertEquals(0, enrollment.getNumberOfStudents(courseIdWithNoStudents));
     }
-
-    /**
-     * Test of processLineByLine method, of class ReadAndScan.
-     */
-    @Test
-    public void testProcessLineByLine() throws Exception {
-        System.out.println("processLineByLine");
-        String fileName = "";
-        ReadAndScan instance = null;
-        instance.processLineByLine(fileName);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of DetermineFileType method, of class ReadAndScan.
-     */
-    @Test
-    public void testDetermineFileType() {
-        System.out.println("DetermineFileType");
-        String aLine = "";
-        ReadAndScan instance = null;
-        InputFileType expResult = null;
-        InputFileType result = instance.DetermineFileType(aLine);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of processCourseLine method, of class ReadAndScan.
-     */
-    @Test
-    public void testProcessCourseLine() throws Exception {
-        System.out.println("processCourseLine");
-        String aLine = "";
-        ReadAndScan instance = null;
-        instance.processCourseLine(aLine);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of processStudentLine method, of class ReadAndScan.
-     */
-    @Test
-    public void testProcessStudentLine() throws Exception {
-        System.out.println("processStudentLine");
-        String aLine = "";
-        ReadAndScan instance = null;
-        instance.processStudentLine(aLine);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
     
+    @Test
+    public void testGetCourseNameOfCourseFileWithColumnOutOfOrder() {
+        coursesFileName = "courses_bad_column_order.csv";
+        studentsFileName = "students.csv";
+        String courseNameForID = "Operating Systems";
+        Course course = enrollment.getCourse(5);
+        assertEquals(courseNameForID, course.getCourseName());
+    }
 }

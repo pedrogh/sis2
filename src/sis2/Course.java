@@ -51,7 +51,6 @@ public class Course {
             // The student was there.  I assume we can only update the
             // state.  Maybe the course should be checked.
             studentInCourse.setState(student.getState());
-            
         }
         
         return bStudentWasAdded;

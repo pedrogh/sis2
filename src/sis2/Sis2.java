@@ -30,6 +30,5 @@ public class Sis2 {
                 System.out.println(ex.getMessage());
             }
         }
-    }
-    
+    }   
 }

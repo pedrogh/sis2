@@ -15,4 +15,5 @@ public interface IEnrollment {
     public void printEnrollment();
     public int getNumberOfCourses();
     public int getNumberOfStudents(Integer courseId);
+    public Course getCourse(Integer courseId);
 }
