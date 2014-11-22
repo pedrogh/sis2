@@ -1,0 +1,4 @@
+course_id, course_name, state
+5, "Operating Systems", active
+2, "The Mathematics of Wonton Burrito Meals", active
+4, "History of Rock and Roll", delete
